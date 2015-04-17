@@ -1,0 +1,73 @@
+<style>
+	#thumbs img {
+		max-width: 100px;
+		max-height: 100px;
+		margin-right: 5px;
+		margin-bottom: 5px;
+		display: block;
+		float: left;
+	}
+
+	.progress-bar {
+		width: 400px;
+		height: 15px;
+		position: relative;
+		border: 1px solid #404040;
+		margin: 5px 0;
+	}
+
+	.progress-bar .inner-bar {
+		position: absolute;
+		height: 100%;
+		width: 1%;
+		background: blue;
+	}
+
+</style>
+
+<script src="jquery.js"></script>
+<script src="ffmpeg-extract/jquery.ffmpeg-extract.js"></script>
+
+<div id="status">
+	<div>
+		<span class="label"></span>
+		<span class="label-status"></span>
+	</div>
+
+	<div class="progress-bar">
+		<div class="inner-bar"></div>
+	</div>
+
+	<div class="console">
+
+	</div>
+</div>
+
+<div id="thumbs"></div>
+
+<script>
+	$( function() {
+		$.ffmpegExtract({
+
+			sourceFilename: '/Applications/AMPPS/www/ffmpeg/NOWNESS-The-Blue-Falll.mp4',
+
+			onStart: function() {
+				$('#thumbs').html('');
+				$('#status .label').text('Extracting frames ... ');
+			},
+
+			onProgress: function(progress) {
+				$('#status .label-status').text(progress.progress + '%');
+				$('.progress-bar .inner-bar').width(progress.progress + '%');
+			},
+
+			onFinish: function(progress) {
+				$('#status .label-status').text('Done.');
+
+				for(var i = 0; i < progress.files.length; i++) {
+					$('#thumbs').append('<img src="'+progress.files[i]+'">');
+				}
+			}
+		});
+	});
+</script>
